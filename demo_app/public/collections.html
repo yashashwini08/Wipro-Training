@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Collections</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, Arial, sans-serif;
+      background: linear-gradient(135deg, #b7e778 0%, #e0ffe6 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fffbe7;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(60,120,60,0.13);
+      padding: 32px 32px 24px 32px;
+      border: 3px solid #b7e778;
+      position: relative;
+      overflow: hidden;
+      animation: ecoBounce 3s infinite alternate;
+      z-index: 2;
+    }
+    .container:before {
+      content: "";
+    }
+
+    .waving-plant {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      font-size: 2.7em;
+      z-index: 1001;
+      animation: plantWave 2.5s ease-in-out infinite alternate;
+      transform-origin: bottom center;
+      pointer-events: none;
+    }
+
+    .waving-leaf {
+      position: fixed;
+      right: 22px;
+      bottom: 24px;
+      font-size: 2em;
+      z-index: 1001;
+      animation: leafWave 2s ease-in-out infinite alternate;
+      transform-origin: bottom left;
+      pointer-events: none;
+    }
+
+    @keyframes plantWave {
+      0% { transform: rotate(-5deg) scale(1);}
+      50% { transform: rotate(8deg) scale(1.05);}
+      100% { transform: rotate(-5deg) scale(1);}
+    }
+
+    @keyframes leafWave {
+      0% { transform: rotate(0deg) scale(1);}
+      50% { transform: rotate(-18deg) scale(1.08);}
+      100% { transform: rotate(0deg) scale(1);}
+    }
+
+    h2 {
+      text-align: center;
+      color: #388e3c;
+      margin-bottom: 10px;
+      font-size: 2em;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 0 #e0ffe6;
+    }
+    h5 {
+      text-align: center;
+      color: #5b8c2a;
+      margin-bottom: 12px;
+      font-size: 1.1em;
+      letter-spacing: 0.5px;
+    }
+    .section {
+      margin-bottom: 28px;
+      background: #e0ffe6;
+      border-radius: 10px;
+      padding: 18px 10px 14px 10px;
+      box-shadow: 0 2px 6px rgba(60,120,60,0.06);
+      border: 1.5px solid #b7e778;
+      position: relative;
+    }
+    .section:before {
+      content: "🌼";
+      font-size: 1.5em;
+      position: absolute;
+      top: 8px;
+      right: 16px;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    input[type="text"], input[type="number"], input[type="email"], input[type="password"], select {
+      width: 65%;
+      padding: 10px;
+      margin-right: 10px;
+      border: 2px solid #b7e778;
+      border-radius: 6px;
+      font-size: 1.1em;
+      background: #f8fff4;
+      transition: border 0.2s;
+      outline: none;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, 
+    input[type="email"]:focus, input[type="password"]:focus, select:focus {
+      border: 2.5px solid #388e3c;
+      background: #eaffea;
+    }
+    input[type="button"], button, input[type="submit"] {
+      padding: 10px 18px;
+      background: linear-gradient(90deg, #b7e778 60%, #5b8c2a 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.1em;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(60,120,60,0.09);
+      transition: background 0.2s, transform 0.1s;
+    }
+    input[type="button"]:hover, button:hover, input[type="submit"]:hover {
+      background: linear-gradient(90deg, #5b8c2a 60%, #b7e778 100%);
+      transform: scale(1.07);
+    }
+    /* Results and outputs */
+    .result, #result, #arrayResult, #setResult, #mapResult {
+      margin-top: 12px;
+      color: #388e3c;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.1em;
+      min-height: 24px;
+      letter-spacing: 0.5px;
+    }
+    /* Fun eco/child-friendly icons */
+    .eco-icon {
+      font-size: 1.4em;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      color: #5b8c2a;
+      font-size: 1em;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+    .animated-output {
+      animation: popIn 0.6s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      70% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    @keyframes ecoBounce {
+      0% { box-shadow: 0 4px 16px rgba(60,120,60,0.13);}
+      50% { box-shadow: 0 8px 32px rgba(60,120,60,0.18);}
+      100% { box-shadow: 0 4px 16px rgba(60,120,60,0.13);}
+    }
+    .output-description {
+      text-align: center;
+      color: #5b8c2a;
+      font-size: 1em;
+      margin-top: 6px;
+      min-height: 24px;
+      transition: color 0.3s;
+    }
+    /* Animated Math Toddles */
+    .math-toddles {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
+    .toddle {
+      font-size: 2.2em;
+      display: inline-block;
+      animation: toddleBounce 1.8s cubic-bezier(.68,-0.55,.27,1.55) infinite;
+      animation-delay: var(--delay);
+      filter: drop-shadow(0 2px 2px #b7e77888);
+      will-change: transform;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .toddle:hover {
+      transform: scale(1.2) rotate(-10deg);
+    }
+    @keyframes toddleBounce {
+      0%, 100% { transform: translateY(0);}
+      20% { transform: translateY(-12px) scale(1.1);}
+      40% { transform: translateY(0) scale(1);}
+      60% { transform: translateY(-8px) scale(1.05);}
+      80% { transform: translateY(0);}
+    }
+    .shower-leaf {
+      position: fixed;
+      top: -40px;
+      z-index: 0;
+      pointer-events: none;
+      animation: leafShowerFall linear forwards;
+      opacity: 0.85;
+      filter: drop-shadow(0 2px 4px #b7e77888);
+      will-change: transform;
+    }
+    @keyframes leafShowerFall {
+      0% {
+        transform: translateY(0) rotate(-20deg) scale(1);
+        opacity: 0.7;
+      }
+      60% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(60deg) scale(1.1);
+        opacity: 0.2;
+      }
+    }
+    /* Sun and clouds */
+    .eco-sky {
+      position: fixed;
+      width: 100vw;
+      left: 0; top: 0;
+      z-index: 0;
+      pointer-events: none;
+      height: 80px;
+    }
+    .eco-sun {
+      position: absolute;
+      left: 40px;
+      top: 10px;
+      font-size: 2.5em;
+      animation: ecoSunSpin 12s linear infinite;
+    }
+    .eco-moon {
+      position: absolute;
+      left: 60px;
+      top: 14px;
+      font-size: 2.3em;
+      z-index: 11;
+      transition: opacity 0.5s;
+      filter: drop-shadow(0 0 8px #ffe06688);
+      pointer-events: none;
+      opacity: 1;
+    }
+    @keyframes ecoSunSpin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    @keyframes ecoMoonSpin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(-360deg);}
+    }
+    .eco-cloud {
+      position: absolute;
+      top: 24px;
+      font-size: 2.2em;
+      opacity: 0.7;
+      animation: ecoCloudMove 22s linear infinite;
+    }
+    .cloud1 { left: 120px; animation-delay: 0s;}
+    .cloud2 { left: 320px; animation-delay: 8s;}
+    @keyframes ecoCloudMove {
+      0% { left: -80px;}
+      100% { left: 110vw;}
+    }
+    /* Progress Bar */
+    .eco-progress-bar-bg {
+      width: 100%;
+      height: 16px;
+      background: #e0ffe6;
+      border-radius: 8px;
+      margin: 18px 0 8px 0;
+      overflow: hidden;
+      border: 1.5px solid #b7e778;
+    }
+    .eco-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #b7e778 60%, #5b8c2a 100%);
+      border-radius: 8px;
+      transition: width 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    /* Fun Fact */
+    .eco-fun-fact {
+      text-align: center;
+      color: #388e3c;
+      font-size: 1.1em;
+      margin: 10px 0 0 0;
+      min-height: 28px;
+      font-style: italic;
+      background: #e0ffe6;
+      border-radius: 8px;
+      padding: 6px 10px;
+      box-shadow: 0 1px 4px rgba(60,120,60,0.07);
+    }
+    /* Confetti */
+    #ecoConfetti {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .eco-confetti {
+      position: absolute;
+      top: -30px;
+      font-size: 1.5em;
+      animation: ecoConfettiFall linear forwards;
+      opacity: 0.9;
+    }
+    @keyframes ecoConfettiFall {
+      0% { transform: translateY(0) rotate(-10deg);}
+      80% { opacity: 1;}
+      100% { transform: translateY(100vh) rotate(40deg); opacity: 0;}
+    }
+    /* Toddle jump */
+    .toddle-jump {
+      animation: toddleJump 0.6s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes toddleJump {
+      0% { transform: translateY(0);}
+      30% { transform: translateY(-24px) scale(1.2);}
+      60% { transform: translateY(0) scale(1);}
+      100% { transform: translateY(0);}
+    }
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      position: fixed;
+      top: 18px;
+      right: 28px;
+      z-index: 2000;
+      display: block;
+      margin: 0;
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: none;
+      background: linear-gradient(90deg, #b7e778 60%, #5b8c2a 100%);
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(60,120,60,0.09);
+      transition: background 0.2s, color 0.2s;
+    }
+    .theme-toggle-btn.night {
+      background: linear-gradient(90deg, #232946 60%, #395886 100%);
+      color: #ffe066;
+    }
+    body.night {
+      background: linear-gradient(135deg, #232946 0%, #395886 100%);
+    }
+    body.night .container {
+      background: #232946;
+      border-color: #395886;
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(35,41,70,0.18);
+    }
+    body.night .section {
+      background: #2e3350;
+      border-color: #395886;
+    }
+    body.night .eco-fun-fact,
+    body.night .eco-progress-bar-bg {
+      background: #232946;
+      color: #ffe066;
+      border-color: #395886;
+    }
+    body.night .eco-progress-bar {
+      background: linear-gradient(90deg, #ffe066 60%, #395886 100%);
+    }
+    body.night .footer {
+      color: #ffe066;
+    }
+    body.night .eco-sky {
+      background: linear-gradient(180deg, #232946 60%, #395886 100%);
+    }
+    body.night .eco-sun {
+      display: none;
+    }
+    body.night .eco-moon {
+      display: block;
+    }
+    body.night .eco-cloud {
+      display: none;
+    }
+    body.night .eco-sky:after {
+      content: "✨✨✨";
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+      font-size: 2em;
+      color: #ffe066;
+      opacity: 0.7;
+      letter-spacing: 0.5em;
+      pointer-events: none;
+    }
+    #ecoStars {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%;
+      height: 60px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .eco-star {
+      position: absolute;
+      color: #ffe066;
+      text-shadow: 0 0 6px #ffe066, 0 0 12px #fff;
+      font-size: 1em;
+      animation: ecoStarTwinkle 2.5s infinite;
+    }
+    .eco-star:before {
+      content: "★";
+    }
+    @keyframes ecoStarTwinkle {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    /* Collections specific styles */
+    .collection-section {
+      margin-bottom: 28px;
+      background: #e0ffe6;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 6px rgba(60,120,60,0.06);
+      border: 1.5px solid #b7e778;
+      position: relative;
+    }
+    .collection-section:before {
+      content: "🌿";
+      font-size: 1.5em;
+      position: absolute;
+      top: 8px;
+      right: 16px;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .collection-item {
+      margin-bottom: 15px;
+      padding: 12px;
+      background: #f8fff4;
+      border-radius: 8px;
+      border: 1px dashed #b7e778;
+    }
+    .collection-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .collection-actions button {
+      padding: 8px 15px;
+      font-size: 0.9em;
+    }
+    .collection-output {
+      margin-top: 15px;
+      padding: 12px;
+      background: #f8fff4;
+      border-radius: 8px;
+      border: 1px solid #b7e778;
+      min-height: 50px;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px 15px;
+        padding: 20px 15px;
+      }
+      input[type="text"], input[type="number"], input[type="email"], input[type="password"], select {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="basic.html">Basic</a></li>
+      <li><a href="collections.html">Collections</a></li>
+    </ul>
+  </nav>
+
+  <!-- Theme Switch Button at top right -->
+  <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()">🌞 Switch to Night</button>
+  
+  <!-- Animated Sun and Clouds -->
+  <div class="eco-sky">
+    <span class="eco-sun">☀️</span>
+    <span class="eco-moon" id="ecoMoon" style="display:none;">🌙</span>
+    <span class="eco-cloud cloud1">☁️</span>
+    <span class="eco-cloud cloud2">☁️</span>
+    <!-- Stars for night mode -->
+    <div id="ecoStars"></div>
+  </div>
+  
+  <!-- Place the waving plant and leaf OUTSIDE the container -->
+  <span class="waving-plant">🌱</span>
+  <span class="waving-leaf">🍃</span>
+  
+  <div class="container">
+    <div class="math-toddles">
+      <span class="toddle" style="--delay:0s;">🧺</span>
+      <span class="toddle" style="--delay:0.2s;">🗃️</span>
+      <span class="toddle" style="--delay:0.4s;">🌿</span>
+      <span class="toddle" style="--delay:0.6s;">🦋</span>
+      <span class="toddle" style="--delay:0.8s;">🍀</span>
+    </div>
+    
+    <h2><span class="eco-icon">🌳</span>JavaScript Collections<span class="eco-icon">🌻</span></h2>
+    
+    <!-- Array Section -->
+    <div class="collection-section">
+      <h5><span class="eco-icon">🌸</span>Array Operations</h5>
+      <div class="collection-item">
+        <input type="text" id="arrayInput" placeholder="Enter comma-separated values">
+        <input type="button" value="Create Array" onclick="createArray()">
+      </div>
+      <div class="collection-actions">
+        <button onclick="arrayPush()">Push</button>
+        <button onclick="arrayPop()">Pop</button>
+        <button onclick="arrayShift()">Shift</button>
+        <button onclick="arrayUnshift()">Unshift</button>
+        <button onclick="arraySort()">Sort</button>
+      </div>
+      <div class="collection-output" id="arrayResult">
+        Array will appear here
+      </div>
+    </div>
+    
+    <!-- Set Section -->
+    <div class="collection-section">
+      <h5><span class="eco-icon">🍃</span>Set Operations</h5>
+      <div class="collection-item">
+        <input type="text" id="setInput" placeholder="Enter comma-separated values">
+        <input type="button" value="Create Set" onclick="createSet()">
+      </div>
+      <div class="collection-actions">
+        <button onclick="setAdd()">Add</button>
+        <button onclick="setDelete()">Delete</button>
+        <button onclick="setClear()">Clear</button>
+        <button onclick="setHas()">Has</button>
+      </div>
+      <div class="collection-output" id="setResult">
+        Set will appear here
+      </div>
+    </div>
+    
+    <!-- Map Section -->
+    <div class="collection-section">
+      <h5><span class="eco-icon">🌻</span>Map Operations</h5>
+      <div class="collection-item">
+        <input type="text" id="mapKeyInput" placeholder="Key" style="width: 30%;">
+        <input type="text" id="mapValueInput" placeholder="Value" style="width: 30%;">
+        <input type="button" value="Add to Map" onclick="mapSet()">
+      </div>
+      <div class="collection-actions">
+        <button onclick="mapGet()">Get</button>
+        <button onclick="mapDelete()">Delete</button>
+        <button onclick="mapClear()">Clear</button>
+        <button onclick="mapHas()">Has</button>
+      </div>
+      <div class="collection-output" id="mapResult">
+        Map will appear here
+      </div>
+    </div>
+    
+    <!-- Eco Progress Bar -->
+    <div class="eco-progress-bar-bg">
+      <div class="eco-progress-bar" id="ecoProgress"></div>
+    </div>
+    
+    <!-- Fun Fact -->
+    <div class="eco-fun-fact" id="ecoFunFact"></div>
+    
+    <div class="footer">
+      <span class="eco-icon">🌍</span>
+      Collections help organize data in JavaScript!
+      <span class="eco-icon">🌱</span>
+    </div>
+  </div>
+  
+  <!-- Confetti container -->
+  <div id="ecoConfetti"></div>
+  
+  <script>
+    // --- Collections Data ---
+    let myArray = [];
+    let mySet = new Set();
+    let myMap = new Map();
+    
+    // --- Array Functions ---
+    function createArray() {
+      const input = document.getElementById('arrayInput').value;
+      if (input) {
+        myArray = input.split(',').map(item => item.trim());
+        updateArrayOutput();
+        showConfetti();
+        updateProgress();
+        showFunFact();
+      }
+    }
+    
+    function arrayPush() {
+      const input = document.getElementById('arrayInput').value;
+      if (input) {
+        myArray.push(input);
+        updateArrayOutput();
+        showConfetti();
+      }
+    }
+    
+    function arrayPop() {
+      if (myArray.length > 0) {
+        const popped = myArray.pop();
+        updateArrayOutput(`Popped: ${popped}`);
+      } else {
+        updateArrayOutput("Array is empty!");
+      }
+    }
+    
+    function arrayShift() {
+      if (myArray.length > 0) {
+        const shifted = myArray.shift();
+        updateArrayOutput(`Shifted: ${shifted}`);
+      } else {
+        updateArrayOutput("Array is empty!");
+      }
+    }
+    
+    function arrayUnshift() {
+      const input = document.getElementById('arrayInput').value;
+      if (input) {
+        myArray.unshift(input);
+        updateArrayOutput();
+        showConfetti();
+      }
+    }
+    
+    function arraySort() {
+      myArray.sort();
+      updateArrayOutput("Array sorted!");
+      showConfetti();
+    }
+    
+    function updateArrayOutput(message = "") {
+      const output = document.getElementById('arrayResult');
+      output.innerHTML = message ? `<span style="color:#388e3c">${message}</span><br>` : '';
+      output.innerHTML += `Array: [${myArray.join(', ')}] (Length: ${myArray.length})`;
+      output.classList.add('animated-output');
+      setTimeout(() => output.classList.remove('animated-output'), 1000);
+    }
+    
+    // --- Set Functions ---
+    function createSet() {
+      const input = document.getElementById('setInput').value;
+      if (input) {
+        mySet = new Set(input.split(',').map(item => item.trim()));
+        updateSetOutput();
+        showConfetti();
+        updateProgress();
+        showFunFact();
+      }
+    }
+    
+    function setAdd() {
+      const input = document.getElementById('setInput').value;
+      if (input) {
+        mySet.add(input);
+        updateSetOutput();
+        showConfetti();
+      }
+    }
+    
+    function setDelete() {
+      const input = document.getElementById('setInput').value;
+      if (input) {
+        const deleted = mySet.delete(input);
+        updateSetOutput(deleted ? "Item deleted" : "Item not found");
+      }
+    }
+    
+    function setClear() {
+      mySet.clear();
+      updateSetOutput("Set cleared!");
+    }
+    
+    function setHas() {
+      const input = document.getElementById('setInput').value;
+      if (input) {
+        const hasItem = mySet.has(input);
+        updateSetOutput(hasItem ? "Set has this item" : "Set does NOT have this item");
+      }
+    }
+    
+    function updateSetOutput(message = "") {
+      const output = document.getElementById('setResult');
+      output.innerHTML = message ? `<span style="color:#388e3c">${message}</span><br>` : '';
+      output.innerHTML += `Set: {${Array.from(mySet).join(', ')}} (Size: ${mySet.size})`;
+      output.classList.add('animated-output');
+      setTimeout(() => output.classList.remove('animated-output'), 1000);
+    }
+    
+    // --- Map Functions ---
+    function mapSet() {
+      const key = document.getElementById('mapKeyInput').value;
+      const value = document.getElementById('mapValueInput').value;
+      if (key && value) {
+        myMap.set(key, value);
+        updateMapOutput();
+        showConfetti();
+        updateProgress();
+        showFunFact();
+      }
+    }
+    
+    function mapGet() {
+      const key = document.getElementById('mapKeyInput').value;
+      if (key) {
+        const value = myMap.get(key);
+        updateMapOutput(value ? `Value for "${key}": ${value}` : `Key "${key}" not found`);
+      }
+    }
+    
+    function mapDelete() {
+      const key = document.getElementById('mapKeyInput').value;
+      if (key) {
+        const deleted = myMap.delete(key);
+        updateMapOutput(deleted ? "Key deleted" : "Key not found");
+      }
+    }
+    
+    function mapClear() {
+      myMap.clear();
+      updateMapOutput("Map cleared!");
+    }
+    
+    function mapHas() {
+      const key = document.getElementById('mapKeyInput').value;
+      if (key) {
+        const hasKey = myMap.has(key);
+        updateMapOutput(hasKey ? "Map has this key" : "Map does NOT have this key");
+      }
+    }
+    
+    function updateMapOutput(message = "") {
+      const output = document.getElementById('mapResult');
+      output.innerHTML = message ? `<span style="color:#388e3c">${message}</span><br>` : '';
+      
+      let mapContent = [];
+      myMap.forEach((value, key) => {
+        mapContent.push(`${key} => ${value}`);
+      });
+      
+      output.innerHTML += `Map: {${mapContent.join(', ')}} (Size: ${myMap.size})`;
+      output.classList.add('animated-output');
+      setTimeout(() => output.classList.remove('animated-output'), 1000);
+    }
+    
+    // --- Shared UI Functions (same as index.html) ---
+    // Confetti Animation
+    function showConfetti() {
+      const confettiContainer = document.getElementById('ecoConfetti');
+      const isNight = document.body.classList.contains('night');
+      for (let i = 0; i < 24; i++) {
+        const conf = document.createElement('span');
+        conf.className = 'eco-confetti';
+        if (isNight) {
+          conf.innerText = '★';
+          conf.style.color = '#ffe066';
+          conf.style.textShadow = '0 0 8px #ffe066, 0 0 16px #fff';
+        } else {
+          conf.innerText = ['🌸','🌿','🍀','🌼','🍃'][Math.floor(Math.random()*5)];
+          conf.style.color = '';
+          conf.style.textShadow = '';
+        }
+        conf.style.left = Math.random()*100 + 'vw';
+        conf.style.animationDuration = (1.8 + Math.random()*1.5) + 's';
+        confettiContainer.appendChild(conf);
+        conf.addEventListener('animationend', () => conf.remove());
+      }
+    }
+
+    // Progress Bar
+    let ecoProgress = 0;
+    function updateProgress() {
+      ecoProgress = Math.min(ecoProgress + 10, 100);
+      document.getElementById('ecoProgress').style.width = ecoProgress + '%';
+    }
+
+    // Fun Facts
+    const funFacts = [
+      "Did you know? Arrays in JavaScript can hold multiple types of data at once!",
+      "Sets automatically remove duplicate values - no duplicates allowed!",
+      "Maps remember the original insertion order of their keys.",
+      "Arrays are actually objects with special length property and methods.",
+      "Sets are collections of unique values where each value can occur only once.",
+      "Maps can use any value (both objects and primitives) as keys.",
+      "The spread operator (...) is great for copying collections!"
+    ];
+    function showFunFact() {
+      const fact = funFacts[Math.floor(Math.random()*funFacts.length)];
+      document.getElementById('ecoFunFact').innerText = fact;
+    }
+
+    // Interactive Toddles
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.toddle').forEach(toddle => {
+        toddle.addEventListener('click', function() {
+          toddle.classList.add('toddle-jump');
+          setTimeout(() => toddle.classList.remove('toddle-jump'), 600);
+        });
+      });
+    });
+
+    // Theme Toggle
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.getElementById('themeToggle');
+      const moon = document.getElementById('ecoMoon');
+      body.classList.toggle('night');
+      if (body.classList.contains('night')) {
+        btn.innerHTML = "🌙 Switch to Day";
+        btn.classList.add('night');
+        showStars();
+        moon.style.display = "inline";
+      } else {
+        btn.innerHTML = "🌞 Switch to Night";
+        btn.classList.remove('night');
+        clearStars();
+        moon.style.display = "none";
+      }
+    }
+
+    // Stars for Night Mode
+    function showStars() {
+      const ecoStars = document.getElementById('ecoStars');
+      ecoStars.innerHTML = '';
+      for (let i = 0; i < 30; i++) {
+        const star = document.createElement('span');
+        star.className = 'eco-star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = (Math.random() * 40) + 'px';
+        star.style.opacity = 0.6 + Math.random() * 0.4;
+        star.style.fontSize = (0.7 + Math.random() * 1.2) + 'em';
+        ecoStars.appendChild(star);
+      }
+    }
+    function clearStars() {
+      document.getElementById('ecoStars').innerHTML = '';
+    }
+
+    // Show stars if night mode is active on load
+    window.addEventListener('DOMContentLoaded', () => {
+      if (document.body.classList.contains('night')) showStars();
+    });
+
+    // Falling leaves/stars
+    window.addEventListener('load', () => {
+      showFunFact();
+      setInterval(() => {
+        if (document.body.classList.contains('night')) {
+          createStarShower();
+        } else {
+          createLeaf();
+        }
+      }, 900);
+    });
+
+    function createStarShower() {
+      const star = document.createElement('span');
+      star.innerText = '★';
+      star.className = 'shower-leaf';
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.fontSize = (0.7 + Math.random() * 1.2) + 'em';
+      star.style.animationDuration = (2 + Math.random() * 3) + 's';
+      star.style.opacity = 0.7 + Math.random() * 0.3;
+      star.style.color = '#ffe066';
+      star.style.textShadow = '0 0 8px #ffe066, 0 0 16px #fff';
+      document.body.appendChild(star);
+      star.addEventListener('animationend', () => star.remove());
+    }
+
+    const leafColors = ['#b7e778', '#a0d468', '#8ccf5e', '#78c85f'];
+    function createLeaf() {
+      const leaf = document.createElement('span');
+      leaf.innerText = '🍃';
+      leaf.className = 'shower-leaf';
+      leaf.style.left = Math.random() * 100 + 'vw';
+      leaf.style.fontSize = (0.5 + Math.random() * 1.2) + 'em';
+      leaf.style.animationDuration = (2 + Math.random() * 3) + 's';
+      leaf.style.opacity = 0.8 + Math.random() * 0.2;
+      leaf.style.color = leafColors[Math.floor(Math.random() * leafColors.length)];
+      document.body.appendChild(leaf);
+      leaf.addEventListener('animationend', () => leaf.remove());
+    }
+  </script>
+</body>
+</html>

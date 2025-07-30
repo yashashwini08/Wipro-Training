@@ -1,0 +1,16 @@
+{
+  "name": "demo_app",
+  "version": "1.0.0",
+  "description": "\"my first node js project\"",
+  "license": "ISC",
+  "author": "\"G Somya lakshmi\"",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@splinetool/react-spline": "^4.1.0",
+    "express": "^5.1.0"
+  }
+}
